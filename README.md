@@ -1,5 +1,8 @@
 # t11pixabayfinder
-A remake of the Pixabay Finder demo application using TypeScript and Thinking-in-React Architecture
+A remake of the Pixabay Finder demo application using TypeScript and Thinking-in-React Architecture.
+The accompanying video series giving detaied typeüalong explanation is [Design1st Business Applications with TypeScript, React, Material UI](https://www.youtube.com/watch?v=XofRkrEfoy0&list=PLeLsYxj1gjvHO2cU1IOX8a4iri8b9HPOd)
+In the video I created a pixabayfinder repository dedicated only for that video series. This t11pixabayfinder is the primary, maintained repository. Maybe the other will be deleted when not needed any more.
+
 ## Installation of Material UI
 - **npm install @material-ui/core @material-ui/icons prop-types @types/prop-types**
 - Change the **target** compiler option to **es2015** in **tsconfig.json**, and VERY IMPORTANT, **kill npm start** and execute again. A running npm start doesn't reread tsconfig. This is important to avoid the error node_modules/@material-ui/core/styles/MuiThemeProvider.d.ts 
