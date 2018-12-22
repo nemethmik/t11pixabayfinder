@@ -4,19 +4,32 @@ import Button from "@material-ui/core/Button"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
+import TextField from "@material-ui/core/TextField"
+import InputAdornment from "@material-ui/core/InputAdornment"
+import SearchIcon from '@material-ui/icons/Search';
+
 import {TPixabayImage,IPixabayAPI} from "./pixabayapi"
-export type TPixabayFinderProps = {
+type TPixabayFinderProps = {
   pixabayApi: IPixabayAPI,
 }
 type TPixabayFinderState = {
   images:TPixabayImage[],
+  searchText: string,
 }
-export default class App extends React.Component<TPixabayFinderProps,TPixabayFinderState> {
+export default class App extends React.Component<TPixabayFinderProps,TPixabayFinderState> implements ISearchBarEvents {
   public state:TPixabayFinderState = {
-    images:[]
+    images:[],
+    searchText: "",
   } 
   async componentDidMount() {
-    const images = await this.props.pixabayApi.queryImagesFromPixabay("dogs",15)
+    // const images = await this.props.pixabayApi.queryImagesFromPixabay("dogs",15)
+    // this.setState({images})
+    await this.onSearchTextChange("dogs")
+  }
+  //This lambda function implements ISearchBarEvents.onSearchTextChange function, cool!
+  public onSearchTextChange = async (searchText:string) => {
+    this.setState({searchText: searchText})
+    const images = await this.props.pixabayApi.queryImagesFromPixabay(searchText,15)
     this.setState({images})
   }
   render() {
@@ -33,6 +46,7 @@ export default class App extends React.Component<TPixabayFinderProps,TPixabayFin
            </a>
         </Toolbar>
       </AppBar>
+      <SearchBar searchText={this.state.searchText} onSearchTextChange={this.onSearchTextChange} />
       {!this.state.images.length && <div>Loading Images ...</div>}
       {this.state.images.map((i) => {
         return (<div key={i.id}>{i.tags} by {i.user} <img src={i.largeImageURL} width="100%"/></div>)
@@ -40,4 +54,26 @@ export default class App extends React.Component<TPixabayFinderProps,TPixabayFin
       </>
     )
   }
+}
+//The interface can be even defined after the App implements it, cool!
+interface ISearchBarEvents {
+  onSearchTextChange(searchText:string):void
+}
+type TSearchBarProps = {
+  searchText: string,
+}
+class SearchBar extends React.Component<TSearchBarProps & ISearchBarEvents>{
+  public render() {
+    //console.log("Images:",this.state.images," numberofImagesToGet=" + this.state.numberofImagesToGet)
+    return (
+      <div>
+        <TextField label="Search" value={this.props.searchText} style={{marginTop:8}}
+          onChange={(e)=>this.props.onSearchTextChange(e.target.value)}
+          InputProps={{
+            /*startAdornment:(<InputAdornment position="start"><SearchIcon /></InputAdornment>),*/
+            endAdornment: <InputAdornment position="end"><SearchIcon/></InputAdornment>,
+          }} helperText="Start typing search string" fullWidth={true}
+        />
+      </div>
+  )}
 }

@@ -18,6 +18,72 @@ To test if MUI works fine:
 ```
 <img src="public\materialuibuttonwithreactlogo.png" width="300px"/>
 
+## Installing TSLint
+The project created with npx create-react-app --typescript doesn't automatically install and configure [TSLint](https://palantir.github.io/tslint/usage/cli/), it should be done by hand.
+[Configure TypeScript, TSLint, and Prettier in VS Code for React Native Development](https://medium.com/@sgroff04/configure-typescript-tslint-and-prettier-in-vs-code-for-react-native-development-7f31f0068d2) is useful.
+[egamma's vscode-tslint](https://marketplace.visualstudio.com/items?itemName=eg2.tslint) VS extension module is deprecated (11M download); instead, it recommends to use [vscode-typescript-tslint-plugin (only 26K download)](https://github.com/Microsoft/vscode-typescript-tslint-plugin), which gives TS linting to VS Code via the [TypeScript TSLint Language Service Plugin](https://github.com/Microsoft/typescript-tslint-plugin), which supports [TS Sematic Rules](https://palantir.github.io/tslint/usage/type-checking/), and is to be installed with the sequence of: (1) Install TSLint 5+ in your workspace or globally, (2) Install the plugin with **npm install -g typescript-tslint-plugin**, (3) Enable the plugin in your tsconfig.json file:
+```
+{
+  "compilerOptions": {
+    "plugins": [
+      { "name": "typescript-tslint-plugin" }
+    ]
+  }
+}
+```
+The [TSLint GitHub documentation](https://github.com/palantir/tslint) mentions the existence of [TSLint Rules for React & JSX](https://github.com/palantir/tslint-react), which has a sample for tslint.json configuration:
+```
+{ 
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    // override tslint-react rules here
+    "jsx-wrap-multiline": false
+  }
+}
+```
+
+So after all this information the sequence is as follows:
+- Global installation of TSLint: **npm install -g tslint typescript** I installed it globally, it is also possible to install within the project without global installation.
+- **tslint --init** create a tslint.json, which I will extend to this 
+```
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended", "tslint-config-standard", "tslint-react", "tslint-config-prettier",
+    ],
+    "jsRules": {},
+    "rules": {
+      "ordered-imports": false,
+      "object-literal-sort-keys": false,
+      "member-ordering": false,
+      "jsx-no-lambda": false,
+      "jsx-boolean-value": false,
+    },
+    "rulesDirectory": []
+}
+```
+This is the tslint configuration from my t11mobiwa project, which used the other, deprecated React/TS project creation template, which has an additional linterOptions section, too:
+```
+{
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js"
+    ]
+  }
+}
+```
+- After having TSLint installed globally, install the TypeScript TSLint Plugin globally, too: **npm install -g typescript-tslint-plugin**
+- Install [TypeScript TSLint Plugin ms-vscode.vscode-typescript-tslint-plugin Preview (26K download)](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) extension module in VS Code.
+
+- Install tslint-react **npm install --save-dev tslint-react tslint-config-prettier tslint-config-standard**
+
+After I have installed and configured TSLint, I received a TSLint error [This syntax requires an imported helper but module 'tslib' cannot be found.ts(2354)](https://stackoverflow.com/questions/52801814/this-syntax-requires-an-imported-helper-but-module-tslib-cannot-be-found-wit) on async componentDidMount; so, the solution was that I changed the module setting in tsconfig from esnext to es2015.
+
+Then I tested if TSLint is capable of detecting the erroneous situation, when I define the type of the React component state type nicely, but forget to define a member variable. TSLint doesn't detect it either, and I receive a runtime error. So, I don't think this TSLint gives any additional help other than annoying rules. I believe the guys who made typescript for create-react-app was quite right not including TSLint by default in the creation process. I've spent more than an hour to read how to install all this TSLint, but it really isn't wort the trouble.  
+
 ## Available Scripts
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) using **npx create-react-app t11pixabayfinder --typescript**
 ```
