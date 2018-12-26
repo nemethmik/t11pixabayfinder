@@ -55,16 +55,16 @@ export default class App extends React.Component<TPixabayFinderProps,TPixabayFin
     this.setState({images})
   }
   //Here we maybe decide to store the selected number of images, but not to query.
-  public handleNumberOfImagesSelected = async (numberOfImages:number) => {
+  public onNumberOfImagesSelected = async (numberOfImages:number) => {
     this.setState({numberOfImagesToGet: numberOfImages})
     const images = await this.props.pixabayApi.queryImagesFromPixabay(this.state.searchText,numberOfImages)
     this.setState({images})
   }
-  public handleClickOpen = (imageDetails:TPixabayImage) => {
+  public onOpenImageDetails = (imageDetails:TPixabayImage) => {
     console.log("Opening Image Details Dialog:" + imageDetails.tags)
     this.setState({imageDetails,openImageDialog:true})
   }
-  public handleClose = () => {
+  public onCloseImageDetails = () => {
     this.setState({openImageDialog:false})
   }
   render() {
@@ -82,16 +82,16 @@ export default class App extends React.Component<TPixabayFinderProps,TPixabayFin
         </Toolbar>
       </AppBar>
       <SearchBarSFC searchText={this.state.searchText} onSearchTextChange={this.onSearchTextChange} 
-        handleNumberOfImagesSelected={this.handleNumberOfImagesSelected}
+        onNumberOfImagesSelected={this.onNumberOfImagesSelected}
         numberofImagesToGet={this.state.numberOfImagesToGet} />
       {!this.state.images.length && <div>Loading Images ...</div>}
       {/*this.state.images.map((i) => {
         return (<div key={i.id}>{i.tags} by {i.user} <img src={i.largeImageURL} width="100%"/></div>)
       })*/}
       {this.state.images.length && <ImageListSFC images={this.state.images} 
-        handleClickOpen={this.handleClickOpen}/>}
+        onOpenImageDetails={this.onOpenImageDetails}/>}
       <ImageDetailsDialog imageDetails={this.state.imageDetails} 
-        openImageDialog={this.state.openImageDialog} handleClose={this.handleClose}/>
+        openImageDialog={this.state.openImageDialog} onCloseImageDetails={this.onCloseImageDetails}/>
       </>
     )
   }
@@ -99,7 +99,7 @@ export default class App extends React.Component<TPixabayFinderProps,TPixabayFin
 //The interface can be even defined after the App implements it, cool!
 interface ISearchBarEvents {
   onSearchTextChange(searchText:string):void
-  handleNumberOfImagesSelected(numberOfImages:number):void
+  onNumberOfImagesSelected(numberOfImages:number):void
 }
 type TSearchBarProps = {
   searchText: string,
@@ -119,7 +119,7 @@ const SearchBarSFC: React.SFC<TSearchBarProps & ISearchBarEvents> = (props):Reac
       <Select value={props.numberofImagesToGet} autoWidth
         onChange={(e)=>{
           const n = parseInt(e.target.value,10) 
-          props.handleNumberOfImagesSelected(n)
+          props.onNumberOfImagesSelected(n)
         }} 
         input={<Input id="numberofImagesToGet" />}>
         <MenuItem value={5}>5</MenuItem>
@@ -135,7 +135,7 @@ type TImageListProps = {
   images:TPixabayImage[]
 }
 interface IImageListEvents {
-  handleClickOpen(imageDetails:TPixabayImage):void
+  onOpenImageDetails(imageDetails:TPixabayImage):void
 }
 const ImageListSFC: React.SFC<TImageListProps & IImageListEvents> = (props):React.ReactElement<any> => (
   <GridList cols={3}>
@@ -144,7 +144,7 @@ const ImageListSFC: React.SFC<TImageListProps & IImageListEvents> = (props):Reac
         <img src={i.largeImageURL} alt={i.tags} />
           <GridListTileBar title={i.tags} subtitle={<span>by: {i.user}</span>}
           actionIcon={
-            <IconButton onClick={()=>props.handleClickOpen(i)}>
+            <IconButton onClick={()=>props.onOpenImageDetails(i)}>
               <ZoomInIcon color="secondary" />
             </IconButton>}/>
       </GridListTile>
@@ -153,7 +153,7 @@ const ImageListSFC: React.SFC<TImageListProps & IImageListEvents> = (props):Reac
 )
 
 interface IImageDetailsDialogEvents {
-  handleClose():void
+  onCloseImageDetails():void
 }
 type TImageDetailsDialogProps = {
   openImageDialog:boolean,
@@ -166,7 +166,7 @@ class ImageDetailsDialog extends React.PureComponent<TImageDetailsDialogProps & 
   public render() {
     return (
       <Dialog open={this.props.openImageDialog} TransitionComponent={this.transition}
-      keepMounted onClose={this.props.handleClose} fullScreen
+      keepMounted onClose={this.props.onCloseImageDetails} fullScreen
       aria-labelledby="alert-dialog-slide-title"
       aria-describedby="alert-dialog-slide-description">
       <AppBar position="relative">
@@ -183,7 +183,7 @@ class ImageDetailsDialog extends React.PureComponent<TImageDetailsDialogProps & 
         <img src={this.props.imageDetails.largeImageURL} width="100%"/>
       </DialogContent>
       <DialogActions>
-        <Button onClick={this.props.handleClose} color="primary">Close</Button>
+        <Button onClick={this.props.onCloseImageDetails} color="primary">Close</Button>
       </DialogActions>
     </Dialog>
     )
