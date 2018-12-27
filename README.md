@@ -1,3 +1,12 @@
+# This withredux branch is just a placeholder; I wanted to implement a Readux version of it, but all my heart was protesting against butchgering this clean application with the mess and the complexity Readux introduces. 
+When architecting an application remember to add: 
+- Internationalization,
+- Theming,
+- Customizability,
+- Settings/Configurations
+
+along with the specific data structures that the application controller passes down to the screen/page components.
+
 # t11pixabayfinder
 A remake of the Pixabay Finder demo application using TypeScript and [Thinking-in-React](https://reactjs.org/docs/thinking-in-react.html) Architecture.
 The project was initialized with [create-react-app, which supports TypeScript out of the box](https://reactjs.org/docs/static-type-checking.html#using-typescript-with-create-react-app).
@@ -84,7 +93,37 @@ This is the tslint configuration from my t11mobiwa project, which used the other
 
 After I have installed and configured TSLint, I received a TSLint error [This syntax requires an imported helper but module 'tslib' cannot be found.ts(2354)](https://stackoverflow.com/questions/52801814/this-syntax-requires-an-imported-helper-but-module-tslib-cannot-be-found-wit) on async componentDidMount; so, the solution was that I changed the module setting in tsconfig from esnext to es2015.
 
-Then I tested if TSLint is capable of detecting the erroneous situation, when I define the type of the React component state type nicely, but forget to define a member variable. TSLint doesn't detect it either, and I receive a runtime error. So, I don't think this TSLint gives any additional help other than annoying rules. I believe the guys who made typescript for create-react-app was quite right not including TSLint by default in the creation process. I've spent more than an hour to read how to install all this TSLint, but it really isn't wort the trouble.  
+Then I tested if TSLint is capable of detecting the erroneous situation, when I define the type of the React component state type nicely, but forget to define a member variable. TSLint doesn't detect it either, and I receive a runtime error. So, I don't think this TSLint gives any additional help other than annoying rules. I believe the guys who made typescript for create-react-app was quite right not including TSLint by default in the creation process. I've spent more than an hour to read how to install all this TSLint, but it really isn't wort the trouble.
+
+## Redux and Redux-Thunk added for State Management
+
+If you know what you are doing you have the option to add Redux and Redux Thunk for state management, which definitely will make your project a lot more complicated while decouping the UI containement structure from the hierarchy of the regular top-down data distribution. With Redux you have a data store separate from the top level component and any component at any level can be connected to that store and any data can be retrieved from the store into the properties of the UI components. This might be a big advantage of some messy badly architected complex applications, where the developers failed to make a clean design upfront.
+Here are a couple of excellent sources of using Redux in TypeScript projects:
+- My favorite is [Microsoft's TypeScript React Starter](https://github.com/Microsoft/TypeScript-React-Starter), which has an excellently practical tutorial section on using Redux with TypeScript
+- [mapStateToProps, and why you may not need mapDispatchToProps when you start Redux by Antoine Sauvage](https://medium.com/ovrsea/mapstatetoprops-and-why-you-may-not-need-mapdispatchtoprops-as-a-beginner-dd012a3da5e6) is not TypeScript, but gives quite decent explanation of what Redux actually does.
+- [React Higher-Order Components in TypeScript](https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb) is not an easy-reader, but nicely explains the fundamentals of HOCs.
+- [TypeScript Generics](https://www.typescriptlang.org/docs/handbook/generics.html) is not for the faint-hearted, sure. I guess 99% of JavaScript programmers will not understand it.
+- [Using TypeScript with Redux](https://dev.to/brightdevs/using-typescript-with-redux-ic) is another top find on the topic
+- [Improved Redux type safety with TypeScript 2.8](https://medium.com/@martin_hotell/improved-redux-type-safety-with-typescript-2-8-2c11a8062575) is quite advanced reading, too.
+- [Writing Better Redux’s Code with TypeScript](https://hackernoon.com/writing-better-reduxs-code-with-typescript-b7a3c1209bca) might be worth reading, too.
+
+### Adding Redux, React-Redux and Redux-Thunk
+- **npm install redux react-redux @types/react-redux redux-thunk**
+```
++ redux-thunk@2.3.0
++ redux@4.0.1
++ react-redux@6.0.0
++ @types/react-redux@6.0.11
+```
+
+### Using Redux Thunk with TypeScript
+It was quite challengind to properly typing Redux Thunk with Flow in the meteorb1/marioplan project. Even then I found that all this Redux especially with Redux Thunk overcompucates the application, it has a steep, easy-to-forget-and-mistake learning curve, and it actually it makes the application really cumbersome. I am pretty sure, you should use only one hierarchy in a cleanly designed application. Redux is something that jumps from the side; it doesn't reduce the complexity at all, the only thing is it reduces the clean architecture of an application. The recent React Context is a similar beast, this is (an excellent butcher tool) for projects to workaround the poor or totally missing initial architecture design of the application.
+Here is a list of documents, that may be worth reading before giving a try to start working on Redux Thunk.
+- [Correct TypeScript typing example for Redux Thunk actions](https://gist.github.com/milankorsos/ffb9d32755db0304545f92b11f0e4beb) This may be outdated as for Redux 4. 
+- [Asynchronous Redux Actions Using Redux Thunk](https://alligator.io/redux/redux-thunk/) has nothing to do with TypeScript
+- [Typescript with Redux, & Redux-Thunk Recipe](https://medium.com/@peatiscoding/typescripts-with-redux-redux-thunk-recipe-fcce4ffca405) is full of errors and doesn't even compile.
+- [A Pattern for Redux Thunk Async Actions](https://spin.atomicobject.com/2018/11/19/redux-thunk-async-actions/) is about a solution for state management for an async call. Don't expect to much from this write-up.
+- [Connect: Dispatching Actions with mapDispatchToProps](https://react-redux.js.org/using-react-redux/connect-mapdispatch) is an official document from React-Redux and is really important to read if you really want to go the Redux way.
 
 ## Available Scripts
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) using **npx create-react-app t11pixabayfinder --typescript**
